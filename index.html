@@ -722,6 +722,33 @@
 <div id="nav-dots"></div>
 
 <script>
+// Sparkle sound generator (loud & clear)
+function playSparkleSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    // Create a short bright chime
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(1200, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(2400, ctx.currentTime + 0.08);
+    osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.25);
+    
+    gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.9, ctx.currentTime + 0.02); // high volume
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.4);
+    
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    
+    osc.start();
+    osc.stop(ctx.currentTime + 0.45);
+  } catch (e) {
+    // silent fail if AudioContext not supported
+  }
+}
 /* ========== VIBRATION ========== */
 function vibrate(pattern = 30) {
   if (navigator.vibrate) {
@@ -847,6 +874,7 @@ function openEnvelope(){
   
   if(willOpen){
     spawnHearts(env,10);
+    playSparkleSound();
     // Sparkling effect
     const rect = env.getBoundingClientRect();
     for(let i=0; i<18; i++){
