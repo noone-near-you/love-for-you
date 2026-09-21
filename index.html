@@ -71,40 +71,51 @@
     box-shadow:0 0 10px rgba(243,217,164,.7);
   }
 
-  /* ===== MUSIC BANNER (TOP) ===== */
-  #music-banner{
-    position:fixed; top:0; left:0; right:0; z-index:30;
-    background:linear-gradient(90deg, rgba(36,18,38,.95), rgba(71,36,73,.92));
-    backdrop-filter:blur(12px);
-    -webkit-backdrop-filter:blur(12px);
-    padding:10px 16px;
-    padding-top:calc(10px + env(safe-area-inset-top,0px));
-    display:flex; align-items:center; justify-content:center; gap:10px;
-    transform:translateY(-100%);
-    transition:transform .55s cubic-bezier(.22,.68,.36,1);
-    border-bottom:1px solid rgba(243,217,164,.15);
-  }
-  #music-banner.show{transform:translateY(0);}
-  .music-eq{
-    display:flex; align-items:flex-end; gap:2.5px; height:16px;
-  }
-  .music-eq span{
-    width:3px; background:var(--gold-300); border-radius:2px;
-    animation:eq 1s ease-in-out infinite;
-  }
-  .music-eq span:nth-child(1){animation-delay:0s;}
-  .music-eq span:nth-child(2){animation-delay:.15s;}
-  .music-eq span:nth-child(3){animation-delay:.3s;}
-  .music-eq span:nth-child(4){animation-delay:.45s;}
-  .music-eq span:nth-child(5){animation-delay:.2s;}
-  @keyframes eq{
-    0%,100%{height:4px;}
-    50%{height:14px;}
-  }
-  .music-text{
-    font-size:12.5px; color:var(--gold-300); font-weight:600;
-    letter-spacing:.04em;
-  }
+  /* ===== MUSIC ICON (top right) ===== */
+#music-icon{
+  position: fixed;
+  top: calc(14px + env(safe-area-inset-top, 0px));
+  right: 16px;
+  z-index: 30;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(36, 18, 38, 0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(243, 217, 164, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(.22,.68,.36,1);
+  pointer-events: none;
+}
+#music-icon.show{
+  opacity: 1;
+  transform: scale(1);
+}
+.music-eq{
+  display: flex;
+  align-items: flex-end;
+  gap: 2.5px;
+  height: 16px;
+}
+.music-eq span{
+  width: 3px;
+  background: var(--gold-300);
+  border-radius: 2px;
+  animation: eq 0.9s ease-in-out infinite;
+}
+.music-eq span:nth-child(1){ animation-delay: 0s; }
+.music-eq span:nth-child(2){ animation-delay: .15s; }
+.music-eq span:nth-child(3){ animation-delay: .3s; }
+.music-eq span:nth-child(4){ animation-delay: .45s; }
+@keyframes eq{
+  0%,100%{ height: 4px; }
+  50%{ height: 14px; }
+}
 
   .eyebrow{font-size:12px; color:var(--rose-400); font-weight:600; letter-spacing:.06em; margin-bottom:6px;}
   .pill-btn{
@@ -389,12 +400,11 @@
 <div class="bg-glow"></div>
 <div id="tap-hearts"></div>
 
-<!-- MUSIC BANNER -->
-<div id="music-banner">
+<!-- MUSIC ICON (top right) -->
+<div id="music-icon">
   <div class="music-eq">
-    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span>
   </div>
-  <div class="music-text">playing just for you 🤍</div>
 </div>
 
 <audio id="bgMusic" loop preload="auto">
@@ -735,12 +745,12 @@ function onPageEnter(i){
 
 /* ========== MUSIC + BANNER ========== */
 const music = document.getElementById('bgMusic');
-const musicBanner = document.getElementById('music-banner');
+const musicIcon = document.getElementById('music-icon');
 
 document.getElementById('openBtn').addEventListener('click',()=>{
   music.volume = 0.45;
   music.play().catch(()=>{});
-  musicBanner.classList.add('show');   // show animated banner
+  musicIcon.classList.add('show');   // show animated banner
   goTo(1);
 });
 
@@ -899,17 +909,13 @@ holdBtn.addEventListener('touchcancel', stopHold);
 /* ========== STREAMING LETTER ========== */
 const letterContent = `my ishu,
 
-we met at 11 pm on 14 feb 2023. three years later you still feel like my favourite surprise.
+I want to fill the little suitcase of my life with every memory of you—the kind where I only want to see your face, get lost in the sparkle of your eyes, and slowly fall deeper into your love. ❤️
 
-you said no for six months. i kept writing. letters. voice notes. little pieces of raj. then you said yes. and i never stopped being grateful.
+I want to be the blush on your cheeks, the earrings that whisper sweet things in your ears, the flowers in your hair, and that one irresistible fragrance you can never forget.
 
-i remember the train. your hand in mine. chocolates. your smile. that was the moment my online love became something i could actually hold.
+Basically, I just want to be a beautiful little part of you… the kind you carry in your heart wherever you go. And yes, I’d happily spend all day listening to your cute, crazy little stories. 😘❤️ 
 
-you dance. you sing. you talk to everyone. i hide in my quiet little world. and somehow you fit right into it.
-
-you forget dates. i remember them. you miss me when a day gets too quiet. i miss you even when we’re talking.
-
-so yes, this website is cheesy. it is also true: i love you, ishu. come here. i owe you the longest hug.`;
+I love you, ishu. come here. i owe you the longest hug.`;
 
 let streamStarted = false;
 function startStreamLetter(){
