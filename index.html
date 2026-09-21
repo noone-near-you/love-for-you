@@ -393,6 +393,35 @@
   @media (prefers-reduced-motion:reduce){
     *{animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important;}
   }
+
+  /* Sad message when she releases early */
+.sad-pop{
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.7);
+  background: rgba(36,18,38,0.92);
+  border: 1px solid rgba(227,135,158,0.4);
+  border-radius: 18px;
+  padding: 14px 20px;
+  font-size: 15px;
+  color: var(--ink-soft);
+  z-index: 60;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.35s cubic-bezier(.22,.68,.36,1);
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+.sad-pop.show{
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.sad-pop .emoji{
+  font-size: 28px;
+  display: block;
+  margin-bottom: 4px;
+}
 </style>
 </head>
 <body>
@@ -640,7 +669,7 @@
         <p id="meterHint" style="margin-top:16px;font-size:13px;opacity:.6;">keep holding…</p>
       </div>
       <div style="text-align:center;margin-top:30px;display:none;" id="meterNext">
-        <button class="pill-btn" onclick="goTo(8)">read my letter →</button>
+        <button class="pill-btn" onclick="goTo(8)">read my heart →</button>
       </div>
     </div>
   </section>
@@ -649,7 +678,7 @@
   <section class="page" id="page-stream">
     <div class="page-inner">
       <p class="sec-sub">episode seven</p>
-      <h1 class="sec-title">a letter from me</h1>
+      <h1 class="sec-title">i miss you everyday</h1>
       <div class="stream-letter" id="streamLetter">
         <div id="streamText"></div>
         <div class="sign" id="streamSign" style="opacity:0;">— Raj</div>
@@ -870,6 +899,31 @@ function resetMeter(){
   holdBtn.style.display = 'inline-block';
 }
 
+function showSadMessage(){
+  const messages = [
+    {emoji: "🥺", text: "no, little more"},
+    {emoji: "😢", text: "so close..."},
+    {emoji: "😿", text: "just a bit more"},
+    {emoji: "😔", text: "don't stop yet"},
+    {emoji: "💔", text: "almost there..."}
+  ];
+  const pick = messages[Math.floor(Math.random() * messages.length)];
+
+  const pop = document.createElement('div');
+  pop.className = 'sad-pop';
+  pop.innerHTML = `<span class="emoji">${pick.emoji}</span>${pick.text}`;
+  document.body.appendChild(pop);
+
+  // trigger animation
+  requestAnimationFrame(() => pop.classList.add('show'));
+
+  // remove after 1.6 seconds
+  setTimeout(() => {
+    pop.classList.remove('show');
+    setTimeout(() => pop.remove(), 350);
+  }, 1600);
+}
+
 function startHold(){
   if(holding || meterValue >= 100) return;
   holding = true;
@@ -897,6 +951,11 @@ function startHold(){
 function stopHold(){
   holding = false;
   clearInterval(meterInterval);
+
+  // If she released before 100%
+  if (meterValue > 0 && meterValue < 100) {
+    showSadMessage();
+  }
 }
 
 holdBtn.addEventListener('mousedown', startHold);
